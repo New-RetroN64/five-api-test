@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Obsługa LocalStorage</title>
+</head>
+<body>
+    <input type="file" id="filePicker" accept=".txt, text/plain">
+    <button id="loadStorageBtn">Wczytaj z LocalStorage</button>
+    <button id="clearStorageBtn">Wyczyść LocalStorage</button>
+    
+    <hr>
+    
+    <pre id="textDisplay">(Tutaj pojawi się tekst)</pre>
+
+    <script>
+        const STORAGE_KEY = 'moj-lokalny-schowek';
+
+        const filePicker = document.getElementById('filePicker');
+        const loadStorageBtn = document.getElementById('loadStorageBtn');
+        const clearStorageBtn = document.getElementById('clearStorageBtn');
+        const textDisplay = document.getElementById('textDisplay');
+
+        filePicker.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                
+                try {
+                    localStorage.setItem(STORAGE_KEY, text);
+                    
+                    textDisplay.innerText = "Plik odczytany";
+                    
+                    // Czyścimy pole wyboru pliku, by można było wybrać go ponownie
+                    filePicker.value = ''; 
+                } catch (error) {
+                    textDisplay.innerText = "Błąd zapisu: " + error.message;
+                }
+            };
+            
+            // Rozpoczynamy czytanie pliku z dysku
+            reader.readAsText(file);
+        });
+
+        // Akcja: WCZYTANIE Z LOCALSTORAGE
+        loadStorageBtn.addEventListener('click', function() {
+            try {
+                // Pobieramy wpis z LocalStorage na podstawie klucza
+                const text = localStorage.getItem(STORAGE_KEY);
+                
+                if (text !== null) {
+                    // Jeśli wpis istnieje, wyświetlamy go w oknie
+                    textDisplay.innerText = text; 
+                } else {
+                    textDisplay.innerText = "Brak zapisanego pliku";
+                }
+            } catch (error) {
+                textDisplay.innerText = "Błąd odczytu: " + error.message;
+            }
+        });
+
+        // Akcja: CZYSZCZENIE LOCALSTORAGE
+        clearStorageBtn.addEventListener('click', function() {
+            try {
+                // Sprawdzamy czy wpis w ogóle istnieje
+                if (localStorage.getItem(STORAGE_KEY) !== null) {
+                    // Usuwamy wpis na podstawie naszego klucza
+                    localStorage.removeItem(STORAGE_KEY);
+                    textDisplay.innerText = "LocalStorage wyczyszczone.";
+                } else
+            } catch (error) {
+                textDisplay.innerText = "Błąd czyszczenia: " + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
