@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Fetch API</title>
+</head>
+<body>
+    <script>
+        const url = 'hello.txt';
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Błąd pobierania pliku');
+                }
+                return response.text();
+            })
+            .then(text => {
+                document.body.innerText = text;
+            })
+            .catch(error => {
+                document.body.innerText = 'Wystąpił błąd: ' + error.message;
+            });
+    </script>
+</body>
+</html>
