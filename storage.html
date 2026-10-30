@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Obsługa LocalStorage</title>
+    <title>LocalStorage API</title>
 </head>
 <body>
     <input type="file" id="filePicker" accept=".txt, text/plain">
@@ -34,25 +34,20 @@
                     
                     textDisplay.innerText = "Plik odczytany";
                     
-                    // Czyścimy pole wyboru pliku, by można było wybrać go ponownie
                     filePicker.value = ''; 
                 } catch (error) {
                     textDisplay.innerText = "Błąd zapisu: " + error.message;
                 }
             };
             
-            // Rozpoczynamy czytanie pliku z dysku
             reader.readAsText(file);
         });
 
-        // Akcja: WCZYTANIE Z LOCALSTORAGE
         loadStorageBtn.addEventListener('click', function() {
             try {
-                // Pobieramy wpis z LocalStorage na podstawie klucza
                 const text = localStorage.getItem(STORAGE_KEY);
                 
                 if (text !== null) {
-                    // Jeśli wpis istnieje, wyświetlamy go w oknie
                     textDisplay.innerText = text; 
                 } else {
                     textDisplay.innerText = "Brak zapisanego pliku";
@@ -62,12 +57,9 @@
             }
         });
 
-        // Akcja: CZYSZCZENIE LOCALSTORAGE
         clearStorageBtn.addEventListener('click', function() {
             try {
-                // Sprawdzamy czy wpis w ogóle istnieje
                 if (localStorage.getItem(STORAGE_KEY) !== null) {
-                    // Usuwamy wpis na podstawie naszego klucza
                     localStorage.removeItem(STORAGE_KEY);
                     textDisplay.innerText = "LocalStorage wyczyszczone.";
                 } else
