@@ -39,11 +39,11 @@
                     
                     await cache.put(CACHE_KEY, response);
                     
-                    textDisplay.innerText = "Plik został poprawnie odczytany z dysku i zapisany w Cache API! Możesz teraz wczytać go przyciskiem.";
+                    textDisplay.innerText = "Plik odczytany";
                     
                     filePicker.value = ''; 
                 } catch (error) {
-                    textDisplay.innerText = "Błąd zapisu do Cache API: " + error.message;
+                    textDisplay.innerText = "Błąd zapisu: " + error.message;
                 }
             };
             
@@ -60,10 +60,10 @@
                     const text = await response.text();
                     textDisplay.innerText = text;
                 } else {
-                    textDisplay.innerText = "Brak zapisanego pliku w Cache API. Najpierw wybierz jakiś plik z dysku.";
+                    textDisplay.innerText = "Brak zapisanego pliku";
                 }
             } catch (error) {
-                textDisplay.innerText = "Błąd odczytu z Cache API: " + error.message;
+                textDisplay.innerText = "Błąd odczytu: " + error.message;
             }
         });
 
@@ -74,12 +74,10 @@
                 const deleted = await cache.delete(CACHE_KEY);
                 
                 if (deleted) {
-                    textDisplay.innerText = "Cache API zostało pomyślnie wyczyszczone.";
-                } else {
-                    textDisplay.innerText = "Nie było nic do usunięcia, Cache API jest już puste.";
+                    textDisplay.innerText = "Cache wyczyszczone.";
                 }
             } catch (error) {
-                textDisplay.innerText = "Błąd podczas czyszczenia Cache API: " + error.message;
+                textDisplay.innerText = "Błąd czyszczenia: " + error.message;
             }
         });
     </script>
