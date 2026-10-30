@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Cache API</title>
+</head>
+<body>
+    <input type="file" id="filePicker" accept=".txt, text/plain">
+    <button id="loadCacheBtn">Wczytaj z cache</button>
+    <button id="clearCacheBtn">Wyczyść cache</button>
+    
+    <hr>
+  
+    <pre id="textDisplay">(Tutaj pojawi się tekst)</pre>
+
+    <script>
+        const CACHE_NAME = 'moj-lokalny-schowek';
+        const CACHE_KEY = '/zapisany-plik.txt'; 
+
+        const filePicker = document.getElementById('filePicker');
+        const loadCacheBtn = document.getElementById('loadCacheBtn');
+        const clearCacheBtn = document.getElementById('clearCacheBtn');
+        const textDisplay = document.getElementById('textDisplay');
+
+        filePicker.addEventListener('change', async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const text = e.target.result;
+                
+                try {
+                    const cache = await caches.open(CACHE_NAME);
+                    
+                    const response = new Response(text, {
+                        headers: { 'Content-Type': 'text/plain' }
+                    });
+                    
+                    await cache.put(CACHE_KEY, response);
+                    
+                    textDisplay.innerText = "Plik został poprawnie odczytany z dysku i zapisany w Cache API! Możesz teraz wczytać go przyciskiem.";
+                    
+                    filePicker.value = ''; 
+                } catch (error) {
+                    textDisplay.innerText = "Błąd zapisu do Cache API: " + error.message;
+                }
+            };
+            
+            reader.readAsText(file);
+        });
+
+        loadCacheBtn.addEventListener('click', async function() {
+            try {
+                const cache = await caches.open(CACHE_NAME);
+                
+                const response = await cache.match(CACHE_KEY);
+                
+                if (response) {
+                    const text = await response.text();
+                    textDisplay.innerText = text;
+                } else {
+                    textDisplay.innerText = "Brak zapisanego pliku w Cache API. Najpierw wybierz jakiś plik z dysku.";
+                }
+            } catch (error) {
+                textDisplay.innerText = "Błąd odczytu z Cache API: " + error.message;
+            }
+        });
+
+        clearCacheBtn.addEventListener('click', async function() {
+            try {
+                const cache = await caches.open(CACHE_NAME);
+                
+                const deleted = await cache.delete(CACHE_KEY);
+                
+                if (deleted) {
+                    textDisplay.innerText = "Cache API zostało pomyślnie wyczyszczone.";
+                } else {
+                    textDisplay.innerText = "Nie było nic do usunięcia, Cache API jest już puste.";
+                }
+            } catch (error) {
+                textDisplay.innerText = "Błąd podczas czyszczenia Cache API: " + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
