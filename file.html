@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>File API</title>
+</head>
+<body>
+    <input type="file" id="filePicker" accept=".txt, text/plain">
+
+    <script>
+        const filePicker = document.getElementById('filePicker');
+
+        filePicker.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    document.body.innerText = e.target.result;
+                };
+
+                reader.onerror = function() {
+                    document.body.innerText = 'Wystąpił błąd podczas odczytu pliku z dysku.';
+                };
+
+                reader.readAsText(file);
+            }
+        });
+    </script>
+</body>
+</html>
